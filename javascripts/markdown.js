@@ -372,17 +372,17 @@ var PR=win['PR']={'createSimpleLexer':createSimpleLexer,'registerLangHandler':re
 
   // Stylesheets
   var linkEl = document.createElement('link');
-  linkEl.href = originBase + '/themes/'+theme+'.min.css';
+  linkEl.href = '../stylesheets/markdown-themes-united.min.css';
   linkEl.rel = 'stylesheet';
   document.head.appendChild(linkEl);
 
   var linkEl = document.createElement('link');
-  linkEl.href = originBase + '/strapdown.css';
+  linkEl.href = '../stylesheets/markdown-strapdown.css';
   linkEl.rel = 'stylesheet';
   document.head.appendChild(linkEl);
 
   var linkEl = document.createElement('link');
-  linkEl.href = originBase + '/themes/bootstrap-responsive.min.css';
+  linkEl.href = '../stylesheets/markdown-bootstrap.min.css';
   linkEl.rel = 'stylesheet';
   document.head.appendChild(linkEl);
 
