@@ -1,5 +1,10 @@
+<!DOCTYPE html>
+<html>
+<title>ScheduleExecutorService</title>
+
+<xmp theme="united" style="display:none;">
 #  ScheduelExecutorService 中4个scheduel接口的用法。
-## `schedule(Callable<Integer> callable, long delay, TimeUnit unit)`和`schedule(Runnable command, long delay, TimeUnit unit)`的用法。
+## `schedule(Callable<Integer/> callable, long delay, TimeUnit unit)`和`schedule(Runnable command, long delay, TimeUnit unit)`的用法。
 他们两个接口的使用方法基本一致，只有参数有区别：一个是线程，另一个是回调方法，回调会多出一个返回结果。
 
 每个参数的含义:
@@ -22,14 +27,14 @@ print start..., now : 2015-12-14 20:09:25
 参数是回调函数的：
 ```
 System.out.println("print start..., now : " + sdf.format(new Date(System.currentTimeMillis())));
-Callable<Integer> call = new PrintCall();
-Future<Integer> future = executor.schedule(call, 1000 * 2, TimeUnit.MILLISECONDS);
+Callable<Integer/> call = new PrintCall();
+Future<Integer/> future = executor.schedule(call, 1000 * 2, TimeUnit.MILLISECONDS);
 System.out.println(future.get());
 ```
 返回结果是：
-``` 
+```
 print start..., now : 2015-12-14 20:11:52
-return 
+return
 100
 ```
 
@@ -105,52 +110,54 @@ print start... , now : 2015-12-14 20:28:13
 ```
 class Print implements Runnable {
 
-	@Override
-	public void run() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		long now = System.currentTimeMillis();
-		System.out.println(sdf.format(new Date(now)));
-	}
-	
+    @Override
+    public void run() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long now = System.currentTimeMillis();
+        System.out.println(sdf.format(new Date(now)));
+    }
 }
 
-class PrintCall implements Callable<Integer> {
+class PrintCall implements Callable<Integer/> {
 
-	@Override
-	public Integer call() throws Exception {
-		System.out.println("return ");
-		int a = 100;
-		return a;
-	}
-	
+    @Override
+    public Integer call() throws Exception {
+    System.out.println("return ");
+    int a = 100;
+    return a;
+    }
+
+    }
+
+    class PrintAfter5sec implements Runnable {
+
+        @Override
+        public void run() {
+        try {
+            Thread.sleep(1000 * 5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long now = System.currentTimeMillis();
+        System.out.println(sdf.format(new Date(now)));
+    }
 }
 
-class PrintAfter5sec implements Runnable {
+    class PrintException implements Runnable {
 
-	@Override
-	public void run() {
-		try {
-			Thread.sleep(1000 * 5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		long now = System.currentTimeMillis();
-		System.out.println(sdf.format(new Date(now)));
-		
-	}
-	
-}
-
-class PrintException implements Runnable {
-
-	@Override
-	public void run() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		long now = System.currentTimeMillis();
-		System.out.println(sdf.format(new Date(now)));
-		throw new RuntimeException("occur exception");
-	}
-	
+    @Override
+    public void run() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long now = System.currentTimeMillis();
+        System.out.println(sdf.format(new Date(now)));
+        throw new RuntimeException("occur exception");
+    }
 }
 ```
+</xmp>
+<script type="text/javascript" src="../javascripts/markdown.js"></script>
+<link rel="stylesheet" href="../stylesheets/markdown-bootstrap.min.css">
+<link rel="stylesheet" href="../stylesheets/markdown-strapdown.css">
+<link rel="stylesheet" href="../stylesheets/markdown-themes-united.min.css">
+</html>
