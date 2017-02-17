@@ -1,0 +1,70 @@
+# ThreadLocal 分析
+threadlocal是为每个使用该变量的线程提供一个线程副本，从而达到线程之间互补影响自己的变量。
+老外设计的东西都很简单清楚，threadlocal只有4个接口
+1. public T get(); 返回当前线程的变量副本
+2. public void set(); 为当前线程保存指定的变量副本
+3. public void remove(); 删除当前线程的变量副本
+4. public void withIntial(); 指定的方法初始化threadlocal
+
+* ThreadLocal 是如何保存变量副本的
+ - ThreadLocal类中有个内部类ThreadLocalMap，在map中线程本身是key，变量副本是value。
+
+下面给出一个简单的demo
+```
+public class AATest {
+
+	private static ThreadLocal<Integer> tl = ThreadLocal.withInitial(() -> 0);
+
+	public int getValue() {
+		tl.set(tl.get()+1);
+		return tl.get();
+	}
+
+	public static void main(String args[]) {
+		AATest aaTest = new AATest();
+		TestThreadLocal t1 = new TestThreadLocal(aaTest);
+		TestThreadLocal t2 = new TestThreadLocal(aaTest);
+		TestThreadLocal t3 = new TestThreadLocal(aaTest);
+		t1.start();
+		t2.start();
+		t3.start();
+	}
+
+	public static class TestThreadLocal extends Thread {
+		private AATest a;
+
+		public TestThreadLocal(AATest a) {
+			this.a = a;
+		}
+
+		public void run() {
+			for (int i = 0; i < 5; i++) {
+				System.out.println(Thread.currentThread().getName() + "::::" + a.getValue());
+			}
+		}
+	}
+}
+```
+输出结果
+```
+Thread-0::::1
+Thread-0::::2
+Thread-0::::3
+Thread-0::::4
+Thread-0::::5
+Thread-1::::1
+Thread-2::::1
+Thread-1::::2
+Thread-2::::2
+Thread-1::::3
+Thread-2::::3
+Thread-1::::4
+Thread-2::::4
+Thread-1::::5
+Thread-2::::5
+```
+可见每份变量都是独立的
+
+* ThreadLocal和单例比较
+threadLocal可以线程不安全的变量封装到里面。每个线程都是一个自己的变量，肯定是线程安全的。
+单例是保证在同一时间只有一个线程在访问，这样访问效率就不如threadLocal了
